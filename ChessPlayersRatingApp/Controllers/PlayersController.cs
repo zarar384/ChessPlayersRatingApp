@@ -20,11 +20,32 @@ namespace ChessPlayersRatingApp.Controllers
         }
 
         // GET: Players
-        public async Task<IActionResult> Index()
+        // SORT
+        public async Task<IActionResult> Index(SortState sortOrder = SortState.RankAsc)
         {
-            return View(await _context.Players.ToListAsync());
-        }
+            IQueryable<Player> players = _context.Players.AsQueryable();
 
+            ViewData["RankSort"] = sortOrder == SortState.RankAsc ? SortState.RankDesc : SortState.RankAsc;
+            ViewData["RatingSort"] = sortOrder == SortState.RatingAsc ? SortState.RatingDesc : SortState.RatingAsc;
+            ViewData["GameSort"] = sortOrder == SortState.GamesAsc ? SortState.GamesAsc : SortState.GamesAsc;
+            ViewData["BirthYearSort"] = sortOrder == SortState.BirthYearyAsc ? SortState.BirthYearDesc : SortState.BirthYearyAsc;
+            ViewData["TitleSort"] = sortOrder == SortState.TitleAsc ? SortState.TitleDesc : SortState.TitleAsc;
+
+
+            players = sortOrder switch
+            {
+                SortState.RankDesc => players.OrderByDescending(s => s.Rank),
+                SortState.RatingAsc => players.OrderBy(s => s.Rating),
+                SortState.GamesAsc => players.OrderByDescending(s => s.Games),
+                SortState.BirthYearyAsc => players.OrderBy(s => s.BirthYear),
+                SortState.TitleAsc => players.OrderByDescending(s => s.Title),
+                _ => players.OrderBy(s => s.Rank),
+            };
+            return View(await players.AsNoTracking().ToListAsync());
+            //GET
+            //return View(await _context.Players.ToListAsync());
+        }
+       
         // GET: Players/Details/5
         public async Task<IActionResult> Details(int? id)
         {
