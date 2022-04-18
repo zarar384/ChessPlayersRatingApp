@@ -30,14 +30,18 @@ namespace ChessPlayersRatingApp.Controllers
             ViewData["GameSort"] = sortOrder == SortState.GamesAsc ? SortState.GamesAsc : SortState.GamesAsc;
             ViewData["BirthYearSort"] = sortOrder == SortState.BirthYearyAsc ? SortState.BirthYearDesc : SortState.BirthYearyAsc;
             ViewData["TitleSort"] = sortOrder == SortState.TitleAsc ? SortState.TitleDesc : SortState.TitleAsc;
+            ViewData["NameSort"] = sortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;
+            ViewData["CountrySort"]= sortOrder == SortState.CountryAsc ? SortState.CountryDesc : SortState.CountryAsc;
 
 
             players = sortOrder switch
             {
                 SortState.RankDesc => players.OrderByDescending(s => s.Rank),
                 SortState.RatingAsc => players.OrderBy(s => s.Rating),
+                SortState.NameAsc => players.OrderBy(s => s.Name),
+                SortState.CountryDesc => players.OrderBy(s => s.Country),
                 SortState.GamesAsc => players.OrderByDescending(s => s.Games),
-                SortState.BirthYearyAsc => players.OrderBy(s => s.BirthYear),
+                SortState.BirthYearyAsc => players.OrderByDescending(s => s.BirthYear),
                 SortState.TitleAsc => players.OrderByDescending(s => s.Title),
                 _ => players.OrderBy(s => s.Rank),
             };

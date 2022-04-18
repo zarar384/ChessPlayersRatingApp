@@ -4,6 +4,10 @@
     {
         RankAsc, 
         RankDesc,
+        NameAsc,
+        NameDesc,
+        CountryAsc,
+        CountryDesc,
         RatingAsc,   
         RatingDesc,
         GamesAsc, 
