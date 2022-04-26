@@ -7,7 +7,7 @@ namespace ChessPlayersRatingApp.Data
     {
         public AppDbContext()
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
