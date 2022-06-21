@@ -1,0 +1,4 @@
+Ve složce Data se nachází třída AppDbContext.cs.
+Změňte název databázového serveru na svůj vlastní (***).
+optionsBuilder.UseSqlServer(@"Server=***; Database = ChessPlayers;Trusted_Connection=True; MultipleActiveResultSets= True;");
+
