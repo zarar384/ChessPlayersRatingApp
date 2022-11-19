@@ -12,18 +12,18 @@ namespace ChessPlayersRatingApp.Controllers
 {
     public class PlayersController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _db;
 
-        public PlayersController(AppDbContext context)
+        public PlayersController(AppDbContext db)
         {
-            _context = context;
+            _db = db;
         }
 
         // GET: Players
         // SORT
         public async Task<IActionResult> Index(SortState sortOrder = SortState.RankAsc)
         {
-            IQueryable<Player> players = _context.Players.AsQueryable();
+            IQueryable<Player> players = _db.Players.AsQueryable();
 
             ViewData["RankSort"] = sortOrder == SortState.RankAsc ? SortState.RankDesc : SortState.RankAsc;
             ViewData["RatingSort"] = sortOrder == SortState.RatingAsc ? SortState.RatingDesc : SortState.RatingAsc;
@@ -58,7 +58,7 @@ namespace ChessPlayersRatingApp.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players
+            var player = await _db.Players
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (player == null)
             {
@@ -83,8 +83,8 @@ namespace ChessPlayersRatingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(player);
-                await _context.SaveChangesAsync();
+                _db.Add(player);
+                await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(player);
@@ -98,7 +98,7 @@ namespace ChessPlayersRatingApp.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players.FindAsync(id);
+            var player = await _db.Players.FindAsync(id);
             if (player == null)
             {
                 return NotFound();
@@ -122,8 +122,8 @@ namespace ChessPlayersRatingApp.Controllers
             {
                 try
                 {
-                    _context.Update(player);
-                    await _context.SaveChangesAsync();
+                    _db.Update(player);
+                    await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -149,7 +149,7 @@ namespace ChessPlayersRatingApp.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players
+            var player = await _db.Players
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (player == null)
             {
@@ -164,15 +164,15 @@ namespace ChessPlayersRatingApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var player = await _context.Players.FindAsync(id);
-            _context.Players.Remove(player);
-            await _context.SaveChangesAsync();
+            var player = await _db.Players.FindAsync(id);
+            _db.Players.Remove(player);
+            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PlayerExists(int id)
         {
-            return _context.Players.Any(e => e.Id == id);
+            return _db.Players.Any(e => e.Id == id);
         }
     }
 }
