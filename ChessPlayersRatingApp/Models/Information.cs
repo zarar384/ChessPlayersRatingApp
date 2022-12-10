@@ -9,7 +9,7 @@ namespace ChessPlayersRatingApp.Models
         [Key]
         public int Id { get; set; }
         public string BaseInfoText { get; set; } //representation
-        public Task<byte[]> Image { get; set; } //base64 encoded jpg
+        public byte[] Image { get; set; } //base64 encoded jpg
         public int PlayerId { get; set; }
         [ForeignKey("PlayerId")]
         public virtual Player Player { get; set; }

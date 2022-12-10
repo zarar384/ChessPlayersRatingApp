@@ -2,6 +2,7 @@
 using ChessPlayersRatingApp.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,35 +15,42 @@ namespace ChessPlayersRatingApp.Utility
 
         public static string GetExtract(int PlayerId)
         {
-            var db = new AppDbContext();
-            var player = db.Players.Find(PlayerId);
+            var _db = new AppDbContext();
+            var player = _db.Players.Find(PlayerId);
 
-            var strFromPage = wiki.DownloadString("https://en.wikipedia.org/api/rest_v1/page/summary/" + GetCorrectNameFormat(player.Name));
-            var data = (JObject)JsonConvert.DeserializeObject(strFromPage);
+            var data = (JObject)JsonConvert.DeserializeObject(GetDataFromWikiAPI(player.Name));
             var extractStr = data["extract"].Value<string>();//get value from key "extract"
             return extractStr;
         }
 
-        public static async Task<byte[]> GetPhotoAsync(int PlayerId)
+        public static byte[] GetPhotoAsync(int PlayerId)
         {
             var db = new AppDbContext();
             var player = db.Players.Find(PlayerId);
 
-            var strFromPage = wiki.DownloadString("https://en.wikipedia.org/api/rest_v1/page/summary/" + GetCorrectNameFormat(player.Name));
             //var deserializeStr = Newtonsoft.Json.JsonConvert.DeserializeObject(strFromPage);
-            var data = (JObject)JsonConvert.DeserializeObject(strFromPage);
-            var c = data["thumbnail"]["source"];
-            if (c != null)
+            var data = (JObject)JsonConvert.DeserializeObject(GetDataFromWikiAPI(player.Name));
+            try
             {
-                var client = new HttpClient();
-                var bytes = await client.GetByteArrayAsync(c.ToString());
-
-                return bytes;
+                var urlPhoto = data["thumbnail"]["source"];//TODO
+                if (urlPhoto != null)
+                {
+                    return wiki.DownloadData(urlPhoto.ToString());
+                }
             }
-
+            catch
+            {
+                return System.Text.Encoding.ASCII.GetBytes("Not Image");
+            }
             return null;
         }
 
+        private static string GetDataFromWikiAPI(string name)
+        {
+            var strFromPage = wiki.DownloadString("https://en.wikipedia.org/api/rest_v1/page/summary/" + GetCorrectNameFormat(name));
+            wiki.Headers.Add("Api-User-Agent", "Example/1.0");
+            return strFromPage;
+        }
         private static string GetCorrectNameFormat(string name)
         {
             string[] strArr = name.Split(' ');

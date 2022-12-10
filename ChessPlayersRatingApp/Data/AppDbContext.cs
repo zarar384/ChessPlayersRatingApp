@@ -16,7 +16,6 @@ namespace ChessPlayersRatingApp.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Information>().OwnsOne(x => x.Image);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
