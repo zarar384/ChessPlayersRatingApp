@@ -15,6 +15,22 @@
         imgDataURL = "/img/no_image_icon.png";
     }
 }
+<script language="javascript" type="text/javascript">
+    // <![CDATA[
+    var buttonClicked = true;
+
+    function Submit1_onclick() {
+        document.getElementById("text").disabled = !buttonClicked;
+        document.getElementById("save").hidden = !buttonClicked;
+        document.getElementById("edit").hidden = buttonClicked;
+
+        if (buttonClicked || !buttonClicked) {
+            buttonClicked = !buttonClicked
+        }
+    }
+
+    // ]]>
+</script>
 
 <!DOCTYPE html>
 <html>
@@ -24,71 +40,45 @@
 </head>
 <body>
     <div class="border p-3">
+        <form asp-action="Upsert">
+            <input type="hidden" asp-for="Information.Id" />
 
-        <div class="form-group row">
-            <h2 class="text-info pl-3">@title</h2>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                <div class="team-single-img">
-                    <img width="200px" src="@imgDataURL"> 
-                </div>                
+            <div class="form-group row">
+                <h2 class="text-info pl-3">@title</h2>
             </div>
-            <div class="col-lg-8 col-md-7">
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Information.Player.Name"></label>
-                    </div>
-                    <div class="col-8">
-                        <p>@name</p>
+            <div class="row">
+                <div class="col-lg-4 col-md-5 xs-margin-30px-bottom">
+                    <div class="team-single-img">
+                        <img width="200px" src="@imgDataURL">
                     </div>
                 </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Information.BaseInfoText"></label>
+                <div class="col-lg-8 col-md-7">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Information.Player.Name"></label>
+                        </div>
+                        <div class="col-8">
+                            <p>@name</p>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <textarea asp-for="Information.BaseInfoText" class="form-control summernote" style="height: 250px;"></textarea>
-                        <span asp-validation-for="Information.BaseInfoText" class="text-danger"></span>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Information.BaseInfoText"></label>
+                        </div>
+                        <div class="col-8">
+                            <textarea asp-for="Information.BaseInfoText" id="text" class="form-control summernote" style="height: 250px;" disabled=true></textarea>
+                            <span asp-validation-for="Information.BaseInfoText" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
-                 
-                @*<div class="form-group row">
-                <div class="col-8 offset-4 row">
+                <div class="col-4 ">
 
-                <div class="col">
-                @if (Model.Information.Id != 0)
-                {
-                //update
-                <input type="submit" class="btn btn-info w-100" value="Update" />
-                }
-                else
-                {
-                //create
-                <input type="submit" onclick="return validateInput()" class="btn btn-primary w-100"
-                value="Create" />
-                }
+                    <button type="button" id="edit" class="btn btn-success" onclick="return Submit1_onclick()" >Edit</button>
+                    <input type="submit" id="save" value="Upsert" class="btn btn-success" hidden=true  />|
+                    <a asp-action="Index" class="btn btn-dark">Back to List</a>
                 </div>
-                <div class="col">
-                <a asp-action="Index" class="btn btn-success w-100">
-                <i class="fas fa-sign-out-alt"></i>
-                Back
-                </a>
-                </div>
-                </div>
-                </div>*@
-            </div>
-            <div class="col-4 ">
-                @* Keep this empty *@
-                @*@if (Model.Information.Id != 0)
-
-                {
-                <img src="@Model.Information.Image" width="100"
-                style="border-radius:5px; border:1px solid #bbb" />
-
-                }*@
-            </div>
-        </div>
+        </form>
+    </div>
     </div>
 </body>
 </html>

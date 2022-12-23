@@ -1,5 +1,6 @@
 using ChessPlayersRatingApp.Data;
 using ChessPlayersRatingApp.Models;
+using ChessPlayersRatingApp.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,8 @@ namespace ChessPlayersRatingApp
 
         public static void Main(string[] args)
         {
-            PlayersDataEntry("Top100ChessPlayers.csv"); 
+            PlayersCsv playersCsv = new PlayersCsv();
+            playersCsv.PlayersDataEntry("Top100ChessPlayers.csv"); 
             CreateHostBuilder(args).Build().Run();   
         }
 
@@ -28,34 +30,5 @@ namespace ChessPlayersRatingApp
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
-        static void PlayersDataEntry(string file)
-        {
-            using (AppDbContext db = new AppDbContext())
-            {
-
-                var players = File.ReadAllLines(file)
-                             .Skip(1)
-                             .Select(Player.ParseFieldScv)
-                             .Take(100);
-                foreach (var item in players)
-                {
-                    db.Players.Add(new Player
-                    {
-                        Rank = item.Rank,
-                        Name = item.Name,
-                        Title = item.Title,
-                        Country = item.Country,
-                        Rating = item.Rating,
-                        Games = item.Games,
-                        BirthYear = item.BirthYear
-                    }); ;
-                }
-                if (!db.Players.Any())
-                {
-                    db.SaveChanges();
-                }               
-            }
-        }
     }
 }

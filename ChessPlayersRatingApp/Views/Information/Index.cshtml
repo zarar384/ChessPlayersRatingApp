@@ -2,18 +2,18 @@
 @model IEnumerable<ChessPlayersRatingApp.Models.Information>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Info";
     AppDbContext db = new AppDbContext();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Product</h1>
-    <p>You <a href="https://dtf.ru/u/55423-felix">DTF account</a>.</p>
+    <h1 class="display-4">Information</h1>
+    <p>You <a href="https://moodle.czu.cz/user/profile.php?id=94766">Kuchiyev Felix</a>.</p>
 </div>
 <div class="container p-3">
     <div class="row p-4">
         <div class="col p-6">
-            <h2 class="text-primary">Product List</h2>
+            <h2 class="text-primary">Information List</h2>
         </div>
         <div class="col-6 text-right">
             <a class="btn btn-primary" asp-action="Upsert">
@@ -32,9 +32,6 @@
                     <th>
                         Name
                     </th>
-                    <th>
-                        Info
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -45,20 +42,13 @@
                         <td width="30%">
                             @db.Players.Where(x=>x.Id == obj.PlayerId).FirstOrDefault().Name
                         </td>
-                        <td width="10%">
-                            @obj.BaseInfoText
-                        </td>
-                        <td>
-                            <div class="text-center">
-                                <div class="w-75 btn-group" role="group">
-                                    <a asp-route-Id="@obj.PlayerId" asp-action="Upsert" class="btn btn-primary">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <a asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger">
-                                        <i class="fa-solid fa-ban"></i>
-                                    </a>
-                                </div>
-                            </div>
+                        <td align="right">
+                            <a asp-route-Id="@obj.PlayerId" asp-action="Upsert" class="btn btn-primary">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a> |
+                            <a asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger">
+                                <i class="fa-solid fa-ban"></i>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -67,7 +57,7 @@
     }
     else
     {
-        <p>No product exists</p>
+        <p>No information exists</p>
     }
 
 </div>

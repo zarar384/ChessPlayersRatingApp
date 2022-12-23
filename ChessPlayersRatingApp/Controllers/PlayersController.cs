@@ -165,6 +165,10 @@ namespace ChessPlayersRatingApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var player = await _db.Players.FindAsync(id);
+            if(_db.Information.Any(m => m.PlayerId == id)) { 
+                var info = await _db.Information.Where(m => m.PlayerId == id).FirstOrDefaultAsync();
+                _db.Information.Remove(info);
+            }
             _db.Players.Remove(player);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

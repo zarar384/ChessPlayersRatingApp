@@ -23,12 +23,14 @@ namespace ChessPlayersRatingApp.Utility
             return extractStr;
         }
 
-        public static byte[] GetPhotoAsync(int PlayerId)
+        public static byte[] GetPhoto(int PlayerId)
         {
             var db = new AppDbContext();
             var player = db.Players.Find(PlayerId);
+            wiki.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; " +
+                                  "Windows NT 5.2; .NET CLR 1.0.3705;)");
+            wiki.Headers["UserAgent"] = "appname";
 
-            //var deserializeStr = Newtonsoft.Json.JsonConvert.DeserializeObject(strFromPage);
             var data = (JObject)JsonConvert.DeserializeObject(GetDataFromWikiAPI(player.Name));
             try
             {
@@ -47,8 +49,22 @@ namespace ChessPlayersRatingApp.Utility
 
         private static string GetDataFromWikiAPI(string name)
         {
-            var strFromPage = wiki.DownloadString("https://en.wikipedia.org/api/rest_v1/page/summary/" + GetCorrectNameFormat(name));
-            wiki.Headers.Add("Api-User-Agent", "Example/1.0");
+            wiki.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; " +
+                                  "Windows NT 5.2; .NET CLR 1.0.3705;)");
+            wiki.Headers["UserAgent"] = "appname";
+            string strFromPage =" ";
+            try
+            {
+                 strFromPage = wiki.DownloadString("https://en.wikipedia.org/api/rest_v1/page/summary/" + name);
+            }
+            catch(WebException ex)
+            {
+                var resp = (HttpWebResponse)ex.Response;
+                if (resp.StatusCode == HttpStatusCode.NotFound) // HTTP 404
+                {
+                    strFromPage = wiki.DownloadString("https://en.wikipedia.org/api/rest_v1/page/summary/" + GetCorrectNameFormat(name));
+                }
+            }
             return strFromPage;
         }
         private static string GetCorrectNameFormat(string name)

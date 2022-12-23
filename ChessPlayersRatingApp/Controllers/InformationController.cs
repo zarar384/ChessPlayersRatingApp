@@ -36,39 +36,7 @@ namespace ChessPlayersRatingApp.Controllers
             return View(objList);
         }
 
-        // GET: InformationController/Upsert/5
-        //public IActionResult Upsert(int? id)
-        //{
-        //    InformationView informationView = new InformationView()
-        //    {
-        //        Information = new Information(),
-        //        Player = _db.Players.Select(i => new SelectListItem
-        //        {
-        //            Text = i.Name,
-        //            Value = i.Id.ToString()
-        //        })
-        //    };
-
-        //    if(id == null)
-        //    {
-        //        return View(null);
-        //    }
-        //    else
-        //    {
-        //        informationView.Information = _db.Information.Find(id);
-
-        //        if(informationView == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        return View(informationView);
-        //    }
-        //}
-
-        // POST: InformationController/Upsert
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
+        //Get
         public async Task<IActionResult> Upsert(int? id)
         {
             var information = _db.Information.Where(x => x.PlayerId == id).FirstOrDefault();
@@ -89,19 +57,15 @@ namespace ChessPlayersRatingApp.Controllers
                         informationView.Information = new Information
                         {
                             BaseInfoText = WikiParser.GetExtract(id.Value),
-                            Image = WikiParser.GetPhotoAsync(id.Value),
+                            Image = WikiParser.GetPhoto(id.Value),
                             Player = _db.Players.Find(id),
                         };
-                        //informationView.Player = _db.Players.Find(PlayerId);
-                        //informationView.Information.Image = WikiParser.GetPhotoAsync(PlayerId.Value);
 
                         _db.Information.Add(informationView.Information);
 
                     }
                     else
                     {
-                        //Updating
-                        //TODO
                         var objFromDb = _db.Information.AsNoTracking().FirstOrDefault(x => x.Id == informationView.Information.Id);
 
                         if (objFromDb != null)
@@ -113,13 +77,29 @@ namespace ChessPlayersRatingApp.Controllers
                         }
                     }
                     _db.SaveChanges();
-                    //informationView.Player = (Player)_db.Players.Select(x => x.InformationId == informationView.Information.Id);
 
                     return View(informationView);
                 }
             }
             _db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        //POST - UPSERT
+        [HttpPost]
+        public async Task<IActionResult> Upsert(InformationView informationView)
+        {
+            var objFromDb = _db.Information.AsNoTracking().FirstOrDefault(u => u.Id == informationView.Information.Id);
+            if (objFromDb != null)
+            {
+                objFromDb.BaseInfoText = informationView.Information.BaseInfoText;
+            }
+            else
+            {
+                return RedirectToAction("Upsert");
+            }
+            _db.Information.Update(objFromDb);
+            _db.SaveChanges();
+            return RedirectToAction("Upsert");
         }
 
 

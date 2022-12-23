@@ -1,7 +1,7 @@
 ﻿@model ChessPlayersRatingApp.Models.Player
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Create Chess Players";
 }
 
 <!DOCTYPE html>
@@ -21,48 +21,45 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Rank" class="control-label"></label>
-                <input asp-for="Rank" class="form-control" />
+                <input asp-for="Rank" class="form-control" placeholder="1" />
                 <span asp-validation-for="Rank" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" placeholder="Carlsen Magnus" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <input asp-for="Title" class="form-control" placeholder="g" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Country" class="control-label"></label>
-                <input asp-for="Country" class="form-control" />
+                <input asp-for="Country" class="form-control" placeholder="NOR" />
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
+                <input asp-for="Rating" class="form-control" placeholder="2842"/>
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Games" class="control-label"></label>
-                <input asp-for="Games" class="form-control" />
+                <input asp-for="Games" class="form-control" placeholder="0" />
                 <span asp-validation-for="Games" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BirthYear" class="control-label"></label>
-                <input asp-for="BirthYear" class="form-control" />
+                <input asp-for="BirthYear" class="form-control" placeholder="1990" />
                 <span asp-validation-for="BirthYear" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />|
+                <a asp-action="Index" class="btn btn-dark">Back to List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
