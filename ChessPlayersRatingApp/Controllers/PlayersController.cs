@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChessPlayersRatingApp.Data;
 using ChessPlayersRatingApp.Models;
+using AutoMapper;
+using ChessPlayersRatingApp.Models.DTO;
 
 namespace ChessPlayersRatingApp.Controllers
 {
     public class PlayersController : Controller
     {
         private readonly AppDbContext _db;
+        private readonly IMapper _mapper;
 
-        public PlayersController(AppDbContext db)
+        public PlayersController(AppDbContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
 
         // GET: Players
@@ -24,6 +28,7 @@ namespace ChessPlayersRatingApp.Controllers
         public async Task<IActionResult> Index(SortState sortOrder = SortState.RankAsc)
         {
             IQueryable<Player> players = _db.Players.AsQueryable();
+            IQueryable<PlayerDto> playersMapper = _mapper.ProjectTo<PlayerDto>(players); 
 
             ViewData["RankSort"] = sortOrder == SortState.RankAsc ? SortState.RankDesc : SortState.RankAsc;
             ViewData["RatingSort"] = sortOrder == SortState.RatingAsc ? SortState.RatingDesc : SortState.RatingAsc;
@@ -34,20 +39,18 @@ namespace ChessPlayersRatingApp.Controllers
             ViewData["CountrySort"]= sortOrder == SortState.CountryAsc ? SortState.CountryDesc : SortState.CountryAsc;
 
 
-            players = sortOrder switch
+            playersMapper = sortOrder switch
             {
-                SortState.RankDesc => players.OrderByDescending(s => s.Rank),
-                SortState.RatingAsc => players.OrderBy(s => s.Rating),
-                SortState.NameAsc => players.OrderBy(s => s.Name),
-                SortState.CountryDesc => players.OrderBy(s => s.Country),
-                SortState.GamesAsc => players.OrderByDescending(s => s.Games),
-                SortState.BirthYearyAsc => players.OrderByDescending(s => s.BirthYear),
-                SortState.TitleAsc => players.OrderByDescending(s => s.Title),
-                _ => players.OrderBy(s => s.Rank),
+                SortState.RankDesc => playersMapper.OrderByDescending(s => s.Rank),
+                SortState.RatingAsc => playersMapper.OrderBy(s => s.Rating),
+                SortState.NameAsc => playersMapper.OrderBy(s => s.Name),
+                SortState.CountryDesc => playersMapper.OrderBy(s => s.Country),
+                SortState.GamesAsc => playersMapper.OrderByDescending(s => s.Games),
+                SortState.BirthYearyAsc => playersMapper.OrderByDescending(s => s.BirthYear),
+                SortState.TitleAsc => playersMapper.OrderByDescending(s => s.Title),
+                _ => playersMapper.OrderBy(s => s.Rank),
             };
-            return View(await players.AsNoTracking().ToListAsync());
-            //GET
-            //return View(await _context.Players.ToListAsync());
+            return View(await playersMapper.AsNoTracking().ToListAsync());
         }
        
         // GET: Players/Details/5
@@ -75,8 +78,6 @@ namespace ChessPlayersRatingApp.Controllers
         }
 
         // POST: Players/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Rank,Name,Title,Country,Rating,Games,BirthYear")] Player player)
@@ -107,8 +108,6 @@ namespace ChessPlayersRatingApp.Controllers
         }
 
         // POST: Players/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Rank,Name,Title,Country,Rating,Games,BirthYear")] Player player)

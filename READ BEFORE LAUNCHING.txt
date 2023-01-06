@@ -1,4 +1,5 @@
-Ve složce Data se nachází třída AppDbContext.cs.
+1)Ve složce Data se nachází třída AppDbContext.cs.
 Změňte název databázového serveru na svůj vlastní (***).
 optionsBuilder.UseSqlServer(@"Server=***; Database = ChessPlayers;Trusted_Connection=True; MultipleActiveResultSets= True;");
-
+2)a aktualizujte databázi
+Tools > NuGet Package Manager > Package Manager Console > Update-Database

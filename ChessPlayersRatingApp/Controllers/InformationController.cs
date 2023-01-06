@@ -36,7 +36,7 @@ namespace ChessPlayersRatingApp.Controllers
             return View(objList);
         }
 
-        //Get
+        //GET - UPSERT
         public async Task<IActionResult> Upsert(int? id)
         {
             var information = _db.Information.Where(x => x.PlayerId == id).FirstOrDefault();
